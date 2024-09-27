@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View,TouchableOpacity,TextInput } from 'react-native'
 import React ,{useState,useEffect} from 'react'
-import useFetch from './hooks/useFetch';
 
 
 
-const apiKey = '88fee88334634a4b4e1340580d3c6b15';
+
+const apiKey = '72aa38298bd743debc60064344b3045a';
 
 export default function Home ({navigation}) {
     const [query,setQuery]=useState('');
@@ -30,10 +30,11 @@ export default function Home ({navigation}) {
 const styles = StyleSheet.create({
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: 'light-grey',
     borderWidth: 1,
     padding: 10,
     margin: 10,
+    color: 'grey',
   },
   send: {
     backgroundColor: 'blue',

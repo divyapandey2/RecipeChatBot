@@ -6,21 +6,23 @@ import Home from './components/Home';
 import History from './components/History';
 import Cart from './components/Cart';
 import Recipe from './components/Recipe';
+import appStore from './components/appstore';
+import { Provider } from 'react-redux';
 
 const Stack= createStackNavigator();
 
 export default function App() {
   return (
-    <View>
+    <Provider store={appStore}>
       <NavigationContainer>
-      <StackNavigator>
+      <Stack.Navigator>
         <Stack.Screen name="Home" component={Home}/>
         <Stack.Screen name="History" component={History}/>
         <Stack.Screen name="Recipe" component={Recipe}/>
         <Stack.Screen name="Cart" component={Cart}/>
-      </StackNavigator>
+      </Stack.Navigator>
       </NavigationContainer>
-    </View>
+      </Provider>
   )
 }
 
