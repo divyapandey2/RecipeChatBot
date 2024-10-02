@@ -20,14 +20,14 @@ export const fetchRecipeDetails = createAsyncThunk(
   }
 );
 
-// Redux slice
+
 const recipeSlice = createSlice({
   name: 'recipes',
   initialState: {
-    food: [],           // List of recipes
+    food: [],           
     isLoading: false,
     error: null,
-    selectedRecipe: null, // Add selectedRecipe to store detailed recipe
+    selectedRecipe: null, 
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -47,10 +47,10 @@ const recipeSlice = createSlice({
       .addCase(fetchRecipeDetails.pending, (state) => {
         state.isLoading = true;
         state.error = null;
-        state.selectedRecipe = null;  // Reset the previous selected recipe
+        state.selectedRecipe = null;  
       })
       .addCase(fetchRecipeDetails.fulfilled, (state, action) => {
-        state.selectedRecipe = action.payload;  // Store the selected recipe details
+        state.selectedRecipe = action.payload;  
         state.isLoading = false;
       })
       .addCase(fetchRecipeDetails.rejected, (state, action) => {
@@ -59,5 +59,7 @@ const recipeSlice = createSlice({
       });
   },
 });
+
+
 
 export default recipeSlice.reducer;

@@ -3,15 +3,23 @@ import React, { useEffect, useState } from 'react';
 import { useRoute } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchRecipes, fetchRecipeDetails } from './slice/recipeSlice';
-import RenderHtml, { useContentWidth } from 'react-native-render-html'; 
+import RenderHtml from 'react-native-render-html'; 
+import { addToCart } from './slice/cartSlice';
 
-export default function Recipe() {
+                                                                                                                 
+export default function Recipe({navigation}) { 
   const route = useRoute();
-  const { query } = route.params;
+  const query = route?.params?.query || 'YourFood'; 
   const dispatch = useDispatch();
   
   const [selectedRecipeId, setSelectedRecipeId] = useState(null); 
   const { food, isLoading, error, selectedRecipe } = useSelector((state) => state.recipes);
+ 
+ 
+
+  const handleAddToCart = (ingredient) => {
+    dispatch(addToCart(ingredient));  
+  };
 
   useEffect(() => {
     dispatch(fetchRecipes(query));
@@ -34,7 +42,7 @@ export default function Recipe() {
     return (
       <View style={styles.recipeContainer}>
         <Text style={styles.recipeTitle}>{recipe.title}</Text>
-        <Image source={{ uri: recipe.image }} style={{ width: 100, height: 100 }} />
+        <Image source={{ uri: recipe.image }} style={{ width: 100, height: 100,borderRadius:50 }} />
         <View style={styles.button}>
         <Button title="View Details" onPress={() => handleViewDetails(recipe.id)} />
         </View>
@@ -43,14 +51,20 @@ export default function Recipe() {
             <View style={styles.recipeDetailsContainer}>
               <Text style={styles.ingredientsTitle}>Ingredients:</Text>
               {selectedRecipe.extendedIngredients.map((ingredient, index) => (
-                <Text key={index} style={styles.ingredientText}>{ingredient.original}</Text>
+               <View key={index} style={styles.ingredientItem}>
+               <Text style={styles.ingredientText}>{ingredient.original}</Text>
+               <Button
+                 title="Add to Cart"
+                 onPress={() => handleAddToCart(ingredient)}  
+               />
+             </View>
               ))}
               <Text style={styles.instructionsTitle}>Instructions:</Text>
               <RenderHtml
                 contentWidth={Dimensions.get('window').width}
-                source={{ html: selectedRecipe.instructions }}  // Render HTML instructions
+                source={{ html: selectedRecipe.instructions }}
                 tagsStyles={{
-                  body: { color: 'black', fontSize: 14 },  // Explicitly set text color and size
+                  body: { color: 'black', fontSize: 14 },  
                 }}
               />
               
@@ -69,6 +83,8 @@ export default function Recipe() {
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderRecipeDetails}
       />
+      
+     
     </View>
   );
 }
@@ -79,14 +95,14 @@ const styles = StyleSheet.create({
   //   width: Dimensions.get('window').width
   // },
   recipe: {
-    fontSize: 20,
-    color: 'grey',
+    fontSize: 18,
+    color: 'black',
     borderBottomWidth: 1,
     borderColor: '#ddd',
     fontWeight: 'bold',
     marginLeft: 10,
-    // justifyContent: 'center',
-    // alignItems: 'center',
+    backgroundColor: 'lavender',
+    alignItems: 'center',
     // alignContent: 'center',
   
   },
@@ -94,11 +110,14 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderColor: '#ddd',
+    backgroundColor: '#fff',
   },
   button: {
-    padding: 10,
+    padding: 5,
     borderBottomWidth: 1,
     borderColor: '#ddd',
+    borderRadius: 5,
+    
   },
   recipeTitle: {
     color: 'black',
@@ -116,6 +135,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 10,
     color: 'black',
+  },
+  ingredientItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   ingredientText: {
     fontSize: 14,
