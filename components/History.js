@@ -1,26 +1,42 @@
-// import { StyleSheet, Text, View } from 'react-native'
-// import React from 'react'
+import { useSelector, useDispatch } from 'react-redux';
+import { removeSearch,clearHistory  } from './slice/historySlice';
+import { FlatList, Button, Text, View,StyleSheet } from 'react-native';
 
-// export default function History({navigation}) {
-//   const dispatch = useDispatch();
-//   const cartItems = useSelector((state) => state.cart.items); 
-//   return (
-//     <View>
-//       <Text>History</Text>
-//     </View>
-//   )
-// }
+export default function History(){
+  const history = useSelector((state) => state.history.items);
+  const dispatch = useDispatch();
 
-// const styles = StyleSheet.create({})
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+  const handleRemove = (index) => {
+    dispatch(removeSearch(index));
+  };
 
-export default function History() {
+  const handleClearAll = () => {
+    dispatch(clearHistory());
+  };
   return (
     <View>
-      <Text>History</Text>
+    <FlatList
+      data={history}
+      keyExtractor={(item, index) => index.toString()}
+      renderItem={({ item, index }) => (
+        
+        <View>
+          <Text style={styles.item}>{item}</Text>
+          <Button title="Remove" onPress={() => handleRemove(index)}  />
+        </View>
+       
+      )}
+    />
+    <Button title="Clear All" onPress={handleClearAll} />
     </View>
-  )
-}
-
-const styles = StyleSheet.create({})
+  );
+};
+const styles = StyleSheet.create({
+  item: {
+    fontSize: 18,
+    color: 'black',
+    padding: 10,
+  },
+  
+  
+});

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchRecipes, fetchRecipeDetails } from './slice/recipeSlice';
 import RenderHtml from 'react-native-render-html'; 
 import { addToCart } from './slice/cartSlice';
-
+import { addSearch } from './slice/historySlice';
                                                                                                                  
 export default function Recipe({navigation}) { 
   const route = useRoute();
@@ -15,13 +15,18 @@ export default function Recipe({navigation}) {
   const [selectedRecipeId, setSelectedRecipeId] = useState(null); 
   const { food, isLoading, error, selectedRecipe } = useSelector((state) => state.recipes);
  
- 
+  
+  const handleSearch = (query) => {
+    dispatch(addSearch(query));
+  
+  };
 
   const handleAddToCart = (ingredient) => {
     dispatch(addToCart(ingredient));  
   };
 
   useEffect(() => {
+    handleSearch(query);
     dispatch(fetchRecipes(query));
   }, [dispatch, query]);
 

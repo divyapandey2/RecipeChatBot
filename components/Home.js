@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View,TouchableOpacity,TextInput } from 'react-native'
 import React ,{useState} from 'react'
-
+import TrendingRecipes from './TrendingRecipes';
 
 
 export default function Home ({navigation}) {
@@ -19,7 +19,8 @@ export default function Home ({navigation}) {
        onChangeText={setQuery}
       />
       <TouchableOpacity style={styles.send} onPress={send}><Text style={styles.getrecipe}>Get Recipe</Text></TouchableOpacity>
-    
+      <TrendingRecipes/>
+
     </View>
   )
 }
