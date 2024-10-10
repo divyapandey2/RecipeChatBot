@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View,TouchableOpacity,TextInput } from 'react-native'
+import { StyleSheet, Text,TouchableOpacity,TextInput } from 'react-native'
 import React ,{useState} from 'react'
 import TrendingRecipes from './TrendingRecipes';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 export default function Home ({navigation}) {
@@ -11,7 +12,7 @@ export default function Home ({navigation}) {
       navigation.navigate('Recipe',{query})
     }
   return (
-    <View>
+    <ScrollView>
       <TextInput
        style={styles.input}
        placeholder="food-name"
@@ -21,7 +22,7 @@ export default function Home ({navigation}) {
       <TouchableOpacity style={styles.send} onPress={send}><Text style={styles.getrecipe}>Get Recipe</Text></TouchableOpacity>
       <TrendingRecipes/>
 
-    </View>
+    </ScrollView>
   )
 }
 

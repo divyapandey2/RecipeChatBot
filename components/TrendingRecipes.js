@@ -5,28 +5,29 @@ const TrendingRecipes = () => {
   const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8080');
-
+    const ws = new WebSocket('ws://192.168.1.9:8090');
+  
     ws.onopen = () => {
       console.log('WebSocket connected');
     };
-
+  
     ws.onmessage = (event) => {
+      console.log('Received data:', event.data);  // Add this line to log incoming data
       const newRecipes = JSON.parse(event.data);
       setRecipes(newRecipes);
     };
-
+  
     ws.onerror = (error) => {
       console.log('WebSocket error:', error);
     };
-
+  
     ws.onclose = () => {
       console.log('WebSocket disconnected');
     };
-
-    // Cleanup WebSocket connection on unmount
+  
     return () => ws.close();
   }, []);
+  
 
   const renderRecipeCard = ({ item }) => (
     <View style={styles.card}>
@@ -46,7 +47,7 @@ const TrendingRecipes = () => {
           horizontal={true}  // To display cards in a horizontal scroll
         />
       ) : (
-        <Text>No trending recipes available</Text>
+        <Text style={styles.nothing}>No trending recipes available</Text>
       )}
     </View>
   );
@@ -61,6 +62,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: 'black',
   },
   card: {
     width: 200,
@@ -79,6 +81,13 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
     fontWeight: '600',
+    color: 'black',
+  
+  },
+  nothing: {
+    padding: 10,
+    fontSize: 12,
+    color: 'black',
   },
 });
 

@@ -1,7 +1,7 @@
 const WebSocket = require('ws');
 const axios = require('axios');
 
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({ port: 8090});
 
 // Spoonacular API details
 const apiKey = '72aa38298bd743debc60064344b3045a';
@@ -31,7 +31,7 @@ wss.on('connection', (ws) => {
   sendTrendingRecipes();
 
   // Send updates every 30 seconds
-  const interval = setInterval(sendTrendingRecipes, 5000);
+  const interval = setInterval(sendTrendingRecipes, 30000);
 
   ws.on('close', () => {
     console.log('Client disconnected');
