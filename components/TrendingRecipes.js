@@ -3,31 +3,38 @@ import { View, Text, FlatList, Image, StyleSheet } from 'react-native';
 
 const TrendingRecipes = () => {
   const [recipes, setRecipes] = useState([]);
+  const [port, setPort] = useState(8090); // Initial port
 
   useEffect(() => {
-    const ws = new WebSocket('ws://192.168.1.9:8090');
-  
-    ws.onopen = () => {
-      console.log('WebSocket connected');
+    const connectWebSocket = (currentPort) => {
+      const ws = new WebSocket(`ws://192.168.1.9:${currentPort}`);
+      
+      ws.onopen = () => {
+        console.log(`WebSocket connected on port ${currentPort}`);
+      };
+
+      ws.onmessage = (event) => {
+        console.log('Received data:', event.data);
+        const newRecipes = JSON.parse(event.data);
+        setRecipes(newRecipes);
+      };
+
+      ws.onerror = (error) => {
+        console.log('WebSocket error:', error);
+        // If there's an error, try next port
+        if (currentPort === 8090) {
+          console.log('Trying port 8091...');
+          setPort(8091); // Set next port and reconnect
+        }
+      };
+
+      ws.onclose = () => {
+        console.log(`WebSocket disconnected from port ${currentPort}`);
+      };
     };
-  
-    ws.onmessage = (event) => {
-      console.log('Received data:', event.data);  // Add this line to log incoming data
-      const newRecipes = JSON.parse(event.data);
-      setRecipes(newRecipes);
-    };
-  
-    ws.onerror = (error) => {
-      console.log('WebSocket error:', error);
-    };
-  
-    ws.onclose = () => {
-      console.log('WebSocket disconnected');
-    };
-  
-    return () => ws.close();
-  }, []);
-  
+
+    connectWebSocket(port);
+  }, [port]);
 
   const renderRecipeCard = ({ item }) => (
     <View style={styles.card}>
@@ -44,7 +51,7 @@ const TrendingRecipes = () => {
           data={recipes}
           renderItem={renderRecipeCard}
           keyExtractor={(item) => item.id.toString()}
-          horizontal={true}  // To display cards in a horizontal scroll
+          horizontal={true}
         />
       ) : (
         <Text style={styles.nothing}>No trending recipes available</Text>
@@ -82,7 +89,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: 'black',
-  
   },
   nothing: {
     padding: 10,

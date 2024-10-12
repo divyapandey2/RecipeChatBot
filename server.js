@@ -1,10 +1,8 @@
 const WebSocket = require('ws');
 const axios = require('axios');
 
-const wss = new WebSocket.Server({ port: 8090});
-
-// Spoonacular API details
 const apiKey = '72aa38298bd743debc60064344b3045a';
+
 
 const fetchRecipes = async () => {
   const url = `https://api.spoonacular.com/recipes/random?number=5&apiKey=${apiKey}`;
@@ -17,24 +15,42 @@ const fetchRecipes = async () => {
   }
 };
 
-wss.on('connection', (ws) => {
-  console.log('Client connected');
+const startWebSocketServer = (port) => {
+  try {
+    const wss = new WebSocket.Server({ port });
+    console.log(`WebSocket server started on port ${port}`);
 
-  const sendTrendingRecipes = async () => {
-    const recipes = await fetchRecipes();
-    if (recipes.length > 0) {
-      ws.send(JSON.stringify(recipes));
+    wss.on('connection', (ws) => {
+      console.log('Client connected');
+
+      const sendTrendingRecipes = async () => {
+        const recipes = await fetchRecipes();
+        if (recipes.length > 0) {
+          ws.send(JSON.stringify(recipes));
+        }
+      };
+
+      
+      sendTrendingRecipes();
+
+      
+      const interval = setInterval(sendTrendingRecipes, 40000);
+
+      ws.on('close', () => {
+        console.log('Client disconnected');
+        clearInterval(interval);
+      });
+    });
+
+  } catch (error) {
+    if (error.code === 'EADDRINUSE') {
+      console.log(`Port ${port} is in use. Trying another port...`);
+      startWebSocketServer(port + 1); // Try next available port
+    } else {
+      console.error('WebSocket server error:', error);
     }
-  };
+  }
+};
 
-  // Send initial recipes when connected
-  sendTrendingRecipes();
-
-  // Send updates every 30 seconds
-  const interval = setInterval(sendTrendingRecipes, 30000);
-
-  ws.on('close', () => {
-    console.log('Client disconnected');
-    clearInterval(interval);
-  });
-});
+// Start server on port 8090 and fallback if needed
+startWebSocketServer(8090);
