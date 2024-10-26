@@ -7,7 +7,7 @@ const TrendingRecipes = () => {
 
   useEffect(() => {
     const connectWebSocket = (currentPort) => {
-      const ws = new WebSocket(`ws://192.168.1.9:${currentPort}`);
+      const ws = new WebSocket(`ws://192.168.29.178:${currentPort}`);
       
       ws.onopen = () => {
         console.log(`WebSocket connected on port ${currentPort}`);

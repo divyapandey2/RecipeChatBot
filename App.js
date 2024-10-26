@@ -10,6 +10,8 @@ import History from './components/History';
 import Cart from './components/Cart';
 import Recipe from './components/Recipe';
 import appStore from './components/appstore';
+import Register from './components/Register';
+import Login from './components/Login';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -57,7 +59,8 @@ export default function App() {
     <Provider store={appStore}>
       <NavigationContainer>
         <Stack.Navigator>
-  
+        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
         <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
          
         </Stack.Navigator>
