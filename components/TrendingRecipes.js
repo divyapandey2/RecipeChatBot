@@ -1,46 +1,48 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import axios from 'axios';  
+import { useNavigation } from '@react-navigation/native';
 
+const apiKey = '72aa38298bd743debc60064344b3045a';
 const TrendingRecipes = () => {
   const [recipes, setRecipes] = useState([]);
-  const [port, setPort] = useState(8090); // Initial port
+  const [isPolling, setIsPolling] = useState(true);
+  const navigation = useNavigation();
+
+  const fetchRecipes = async () => {
+    const url = `https://api.spoonacular.com/recipes/random?number=5&apiKey=${apiKey}`;
+    try {
+      const response = await axios.get(url);
+      setRecipes(response.data.recipes);
+    } catch (error) {
+      console.error('Error fetching recipes:', error);
+    }
+  };
+
 
   useEffect(() => {
-    const connectWebSocket = (currentPort) => {
-      const ws = new WebSocket(`ws://192.168.29.178:${currentPort}`);
-      
-      ws.onopen = () => {
-        console.log(`WebSocket connected on port ${currentPort}`);
-      };
+    if (isPolling) {
+      fetchRecipes(); // Fetch immediately on mount
 
-      ws.onmessage = (event) => {
-        console.log('Received data:', event.data);
-        const newRecipes = JSON.parse(event.data);
-        setRecipes(newRecipes);
-      };
+      const interval = setInterval(() => {
+        fetchRecipes();
+      }, 50000);
+      return () => clearInterval(interval); // Cleanup on unmount or when polling stops
+      }
+      }, [isPolling]);
 
-      ws.onerror = (error) => {
-        console.log('WebSocket error:', error);
-        // If there's an error, try next port
-        if (currentPort === 8090) {
-          console.log('Trying port 8091...');
-          setPort(8091); // Set next port and reconnect
-        }
-      };
-
-      ws.onclose = () => {
-        console.log(`WebSocket disconnected from port ${currentPort}`);
-      };
-    };
-
-    connectWebSocket(port);
-  }, [port]);
+  const handlePress = (recipes) => {
+    setIsPolling(false);
+    navigation.navigate('Recipe', { query:recipes.title});
+  };
 
   const renderRecipeCard = ({ item }) => (
-    <View style={styles.card}>
-      <Image source={{ uri: item.image }} style={styles.image} />
-      <Text style={styles.title}>{item.title}</Text>
-    </View>
+    <TouchableOpacity onPress={() => handlePress(item)}>
+      <View style={styles.card}>
+        <Image source={{ uri: item.image }} style={styles.image}/>
+        <Text style={styles.title}>{item.title}</Text>
+      </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -51,7 +53,7 @@ const TrendingRecipes = () => {
           data={recipes}
           renderItem={renderRecipeCard}
           keyExtractor={(item) => item.id.toString()}
-          horizontal={true}
+          horizontal
         />
       ) : (
         <Text style={styles.nothing}>No trending recipes available</Text>
@@ -64,12 +66,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: '#f8f9fa',
   },
   header: {
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: 'black',
+    color: '#333',
   },
   card: {
     width: 200,
@@ -88,12 +91,12 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
     fontWeight: '600',
-    color: 'black',
+    color: '#333',
   },
   nothing: {
     padding: 10,
-    fontSize: 12,
-    color: 'black',
+    fontSize: 14,
+    color: '#555',
   },
 });
 

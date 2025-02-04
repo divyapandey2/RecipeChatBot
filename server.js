@@ -54,3 +54,4 @@ const startWebSocketServer = (port) => {
 
 // Start server on port 8090 and fallback if needed
 startWebSocketServer(8090);
+

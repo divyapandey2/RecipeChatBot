@@ -9,7 +9,7 @@ import { addSearch } from './slice/historySlice';
                                                                                                                  
 export default function Recipe({navigation}) { 
   const route = useRoute();
-  const query = route?.params?.query || 'YourFood'; 
+  const query = route?.params?.query || 'Choose your Food'; 
   const dispatch = useDispatch();
   
   const [selectedRecipeId, setSelectedRecipeId] = useState(null); 
@@ -58,10 +58,8 @@ export default function Recipe({navigation}) {
               {selectedRecipe.extendedIngredients.map((ingredient, index) => (
                <View key={index} style={styles.ingredientItem}>
                <Text style={styles.ingredientText}>{ingredient.original}</Text>
-               <Button
-                 title="Add to Cart"
-                 onPress={() => handleAddToCart(ingredient)}  
-               />
+               <Button title="Add to Cart"
+                 onPress={() => handleAddToCart(ingredient)}/>
              </View>
               ))}
               <Text style={styles.instructionsTitle}>Instructions:</Text>
@@ -126,7 +124,7 @@ const styles = StyleSheet.create({
   },
   recipeTitle: {
     color: 'black',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   recipeDetailsContainer: {
