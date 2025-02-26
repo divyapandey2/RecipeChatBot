@@ -30,11 +30,11 @@ export default function Login({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
-      <Image source={require('./images/profileLogo.png')} style={styles.profilePicture} />
+      <Image source={require('./images/food.jpeg')} style={styles.profilePicture} />
 
       <TextInput 
         style={styles.input}
-        placeholder="email Id"
+        placeholder="Email Id"
         value={email}
         onChangeText={setEmail}
       />
@@ -63,14 +63,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#1c1c1c',
+    backgroundColor: '#ffe4e1',
     width: '100%',
     height: '100%',
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#f39c12',
     marginBottom: 25,
     textAlign: 'center',
   },
@@ -83,13 +83,13 @@ const styles = StyleSheet.create({
     borderColor: '#4caf50',
   },
   input: {
-    backgroundColor: '#3c3c3c',
+    backgroundColor: 'white',
     color: '#ffffff',
     fontSize: 16,
     paddingHorizontal: 15,
     width: '100%',
     height: 50,
-    borderRadius: 25,
+    borderRadius: 15,
     marginVertical: 10,
     borderWidth: 1,
     borderColor: '#555',
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   },
   accountText: {
     marginTop: 15,
-    color: '#cccccc',
+    color: 'black',
     fontSize: 16,
     textAlign: 'center',
   },
