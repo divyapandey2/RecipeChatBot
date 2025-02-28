@@ -26,10 +26,10 @@ const TrendingRecipes = () => {
 
       const interval = setInterval(() => {
         fetchRecipes();
-      }, 50000);
+      }, 60000);
       return () => clearInterval(interval); // Cleanup on unmount or when polling stops
-      }
-      }, [isPolling]);
+    }
+  }, [isPolling]);
 
   const handlePress = (recipes) => {
     setIsPolling(false);

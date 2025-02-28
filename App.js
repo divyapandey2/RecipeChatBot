@@ -12,6 +12,7 @@ import Recipe from './components/Recipe';
 import appStore from './components/appstore';
 import Register from './components/Register';
 import Login from './components/Login';
+import Splash from './components/Splash';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -58,7 +59,18 @@ export default function App() {
   return (
     <Provider store={appStore}>
       <NavigationContainer>
-        <Stack.Navigator>
+      <Stack.Navigator
+          initialRouteName="Splash"
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: '#6200EE',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}>
+          <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }}/>
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
         <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
