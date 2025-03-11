@@ -31,8 +31,12 @@ export default function Recipe({navigation}) {
   }, [dispatch, query]);
 
   const handleViewDetails = (id) => {
-    setSelectedRecipeId(id);  
-    dispatch(fetchRecipeDetails(id)); 
+    if (selectedRecipeId === id) {
+      setSelectedRecipeId(null);
+    } else {
+      setSelectedRecipeId(id);
+      dispatch(fetchRecipeDetails(id));
+    }
   };
 
   if (isLoading) {
@@ -44,34 +48,44 @@ export default function Recipe({navigation}) {
   }
 
   const renderRecipeDetails = ({ item: recipe }) => {
+    const isSelected = selectedRecipeId === recipe.id;
+
     return (
-      <View style={styles.recipeContainer}>
-        <Text style={styles.recipeTitle}>{recipe.title}</Text>
-        <Image source={{ uri: recipe.image }} style={{ width: 100, height: 100,borderRadius:50 }} />
-        <View style={styles.button}>
-        <Button title="View Details" onPress={() => handleViewDetails(recipe.id)} />
+      <View style={styles.recipeCard}>
+        <View style={styles.cardHeader}>
+          <Image source={{ uri: recipe.image }} style={styles.recipeImage} />
+          <View style={styles.headerContent}>
+            <Text style={styles.recipeTitle} numberOfLines={2}>{recipe.title}</Text>
+            <Button 
+              title={isSelected ? "Hide Details" : "View Details"}
+              onPress={() => handleViewDetails(recipe.id)}
+              color="#4A90E2"
+            />
+          </View>
         </View>
-        {selectedRecipeId === recipe.id && selectedRecipe && (
-          <ScrollView style={styles.scrollViewContainer}>
-            <View style={styles.recipeDetailsContainer}>
-              <Text style={styles.ingredientsTitle}>Ingredients:</Text>
-              {selectedRecipe.extendedIngredients.map((ingredient, index) => (
-               <View key={index} style={styles.ingredientItem}>
-               <Text style={styles.ingredientText}>{ingredient.original}</Text>
-               <Button title="Add to Cart"
-                 onPress={() => handleAddToCart(ingredient)}/>
-             </View>
-              ))}
-              <Text style={styles.instructionsTitle}>Instructions:</Text>
-              <RenderHtml
-                contentWidth={Dimensions.get('window').width}
-                source={{ html: selectedRecipe.instructions }}
-                tagsStyles={{
-                  body: { color: 'black', fontSize: 14 },  
-                }}
-              />
-              
-            </View>
+
+        {isSelected && selectedRecipe && (
+          <ScrollView style={styles.detailsContainer} nestedScrollEnabled={true}>
+            <Text style={styles.sectionTitle}>Ingredients:</Text>
+            {selectedRecipe.extendedIngredients.map((ingredient, index) => (
+              <View key={index} style={styles.ingredientItem}>
+                <Text style={styles.ingredientText}>{ingredient.original}</Text>
+                <Button 
+                  title="Add to Cart"
+                  onPress={() => handleAddToCart(ingredient)}
+                  color="#2ECC71"
+                />
+              </View>
+            ))}
+            
+            <Text style={styles.sectionTitle}>Instructions:</Text>
+            <RenderHtml
+              contentWidth={Dimensions.get('window').width - 40}
+              source={{ html: selectedRecipe.instructions }}
+              tagsStyles={{
+                body: { color: 'black', fontSize: 16, lineHeight: 24 },
+              }}
+            />
           </ScrollView>
         )}
       </View>
@@ -85,76 +99,130 @@ export default function Recipe({navigation}) {
         data={food}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderRecipeDetails}
+        contentContainerStyle={styles.listContainer}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
       />
-      
-     
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  //   width: Dimensions.get('window').width
-  // },
+  container: {
+    flex: 1,
+    backgroundColor: '#F7F9FC',
+    paddingTop: 10,
+  },
+  listContainer: {
+    padding: 16,
+  },
   recipe: {
-    fontSize: 18,
-    color: 'black',
+    fontSize: 24,
+    color: '#2C3E50',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    marginBottom: 10,
+    fontWeight: '600',
+    backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderColor: '#ddd',
-    fontWeight: 'bold',
-    marginLeft: 10,
-    backgroundColor: 'lavender',
+    borderBottomColor: '#E8EEF2',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  recipeCard: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#E8EEF2',
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    padding: 16,
+    backgroundColor: 'white',
     alignItems: 'center',
-    // alignContent: 'center',
-  
   },
-  recipeContainer: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderColor: '#ddd',
-    backgroundColor: '#fff',
+  recipeImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 12,
+    backgroundColor: '#F0F3F7',
   },
-  button: {
-    padding: 5,
-    borderBottomWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    
+  headerContent: {
+    flex: 1,
+    marginLeft: 16,
+    justifyContent: 'space-between',
+    height: 80,
   },
   recipeTitle: {
-    color: 'black',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#1A1D1E',
+    marginBottom: 8,
+    lineHeight: 24,
   },
-  recipeDetailsContainer: {
-    padding: 10,
+  detailsContainer: {
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#E8EEF2',
+    backgroundColor: '#FAFBFC',
   },
-  scrollViewContainer: {
-    flex: 1,
-  },
-  ingredientsTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 10,
-    color: 'black',
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#2C3E50',
+    marginBottom: 12,
+    marginTop: 16,
   },
   ingredientItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E8EEF2',
+    backgroundColor: 'white',
+    borderRadius: 8,
+    marginBottom: 8,
   },
   ingredientText: {
-    fontSize: 14,
-    marginBottom: 5,
-    color: 'black',
+    flex: 1,
+    fontSize: 15,
+    color: '#4A5568',
+    marginRight: 12,
+    lineHeight: 20,
   },
-  instructionsTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 10,
-    color: 'black',
+  separator: {
+    height: 20,
   },
-
+  button: {
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  cartButton: {
+    backgroundColor: '#4A90E2',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  instructionsContainer: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 12,
+  },
 });
