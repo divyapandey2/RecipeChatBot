@@ -6,7 +6,6 @@ export default function Register({navigation}) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('');
-  const [dob, setDob] = useState('');
   const [email, setEmail] = useState('');
   const [contactNumber, setContactNumber] = useState('');
   const [password, setPassword] = useState('');
@@ -47,19 +46,14 @@ export default function Register({navigation}) {
       />
       <TextInput 
         style={styles.input}
-        placeholder="username"
+        placeholder="Username"
         value={username}
         onChangeText={setUsername}
       />
+      
       <TextInput 
         style={styles.input}
-        placeholder="DOB"
-        value={dob}
-        onChangeText={setDob}
-      />
-      <TextInput 
-        style={styles.input}
-        placeholder="email Id"
+        placeholder="Email Id"
         value={email}
         onChangeText={setEmail}
         
@@ -98,13 +92,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: 20,
-        backgroundColor:'black',
+        backgroundColor:'#ffe4e1',
         width:'100%',
         height:'100%',
         
       },
       input: {
-        backgroundColor: 'grey',
+        backgroundColor: 'white',
         color: 'black',
         fontSize: 18,
         paddingHorizontal: 8,
@@ -129,7 +123,7 @@ const styles = StyleSheet.create({
       },
       accountText: {
         marginTop: 20,
-        color: 'white',
+        color: 'black',
         fontSize: 16,
       },
       logintext: {
